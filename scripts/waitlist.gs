@@ -1,44 +1,38 @@
 /**
+ * @OnlyCurrentDoc
+ * 
  * SeedShelter — Waitlist Email Capture
  * Google Apps Script (Free Serverless Backend)
  *
  * SETUP INSTRUCTIONS:
- * 1. Go to https://script.google.com and create a new project
- * 2. Paste this entire file contents into Code.gs
- * 3. Click "Deploy" → "New Deployment"
- * 4. Select Type: "Web app"
- * 5. Set "Execute as": Me
- * 6. Set "Who has access": Anyone
- * 7. Click Deploy → copy the Web App URL
- * 8. Paste that URL into js/main.js → WAITLIST_ENDPOINT constant
+ * 1. Create a new Google Sheet in your Google Drive (e.g., "SeedShelter Waitlist")
+ * 2. In the Google Sheet menu, click Extensions → Apps Script
+ * 3. Paste this entire file contents into Code.gs
+ * 4. Click "Deploy" → "New Deployment"
+ * 5. Select Type: "Web app"
+ * 6. Set "Execute as": Me
+ * 7. Set "Who has access": Anyone
+ * 8. Click Deploy → copy the Web App URL
+ * 9. Paste that URL into js/main.js → WAITLIST_ENDPOINT constant
  *
- * The script will automatically create a Google Sheet named
- * "SeedShelter Waitlist" in your Google Drive.
+ * The script will automatically add headers if they don't exist yet.
  */
-
-// Sheet name constant
-var SHEET_NAME = 'SeedShelter Waitlist';
 
 /**
- * Get or create the waitlist spreadsheet
+ * Get the active spreadsheet and initialize headers if empty
  */
-function getOrCreateSheet() {
-  var files = DriveApp.getFilesByName(SHEET_NAME);
-
-  if (files.hasNext()) {
-    var file = files.next();
-    var ss = SpreadsheetApp.open(file);
-    return ss.getActiveSheet();
-  }
-
-  // Create new spreadsheet with headers
-  var ss = SpreadsheetApp.create(SHEET_NAME);
+function getTargetSheet() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = ss.getActiveSheet();
-  sheet.appendRow(['Email', 'Timestamp', 'Source']);
-  sheet.getRange('A1:C1').setFontWeight('bold');
-  sheet.setColumnWidth(1, 300);
-  sheet.setColumnWidth(2, 200);
-  sheet.setColumnWidth(3, 150);
+
+  // If the sheet is empty, add headers and format them
+  if (sheet.getLastRow() === 0) {
+    sheet.appendRow(['Email', 'Timestamp', 'Source']);
+    sheet.getRange('A1:C1').setFontWeight('bold');
+    sheet.setColumnWidth(1, 300);
+    sheet.setColumnWidth(2, 200);
+    sheet.setColumnWidth(3, 150);
+  }
 
   return sheet;
 }
@@ -69,7 +63,7 @@ function doPost(e) {
       return buildResponse({ status: 'error', message: 'Invalid email address' });
     }
 
-    var sheet = getOrCreateSheet();
+    var sheet = getTargetSheet();
 
     // Check for duplicates
     if (emailExists(sheet, email)) {

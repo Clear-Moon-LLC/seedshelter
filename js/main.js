@@ -6,7 +6,7 @@
   'use strict';
 
   // ---- Config ----
-  const WAITLIST_ENDPOINT = 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE';
+  const WAITLIST_ENDPOINT = 'https://script.google.com/macros/s/AKfycbz4QsBDo0yENCVHpqCHtg1eD-_hFKlhelXGuxVpy6T02ZMDg5KO3FOCN-GSaPnp3b5p4A/exec';
 
   // ---- Scroll Animations ----
   function initScrollAnimations() {
