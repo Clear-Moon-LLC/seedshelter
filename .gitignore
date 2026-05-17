@@ -1,0 +1,33 @@
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Editor configs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Environment
+.env
+.env.local
+
+# Node (if added later)
+node_modules/
+package-lock.json
+
+# Python (if added later)
+__pycache__/
+*.pyc
+*.pyo
+venv/
+.venv/
+
+# Database
+*.db
+*.sqlite3
+
+# Logs
+*.log
